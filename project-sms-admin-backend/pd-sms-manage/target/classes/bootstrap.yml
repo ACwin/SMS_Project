@@ -1,0 +1,40 @@
+pinda:
+  local-ip: ${LOCAL_IP:${spring.cloud.client.ip-address}}   # docker部署时，需要指定， 表示的运行该服务的宿主机IP
+  nacos:
+    ip: ${NACOS_IP:nacos-dev.itcast.cn}
+    port: ${NACOS_PORT:8848}
+    namespace: ${NACOS_ID:37d34608-3af3-4973-aaeb-13f26ff36f4d}
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: pd-sms-manage
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: ${pinda.nacos.ip}:${pinda.nacos.port}
+        file-extension: yml
+        namespace: ${pinda.nacos.namespace}
+        shared-dataids: common.yml,redis.yml,mysql.yml
+        refreshable-dataids: common.yml
+        enabled: true
+      discovery:
+        server-addr: ${pinda.nacos.ip}:${pinda.nacos.port}
+        namespace: ${pinda.nacos.namespace}
+        metadata:
+          management.context-path: ${server.servlet.context-path:}${spring.mvc.servlet.path:}${management.endpoints.web.base-path:}
+
+logging:
+  file:
+    path: /data/projects/logs
+    name: ${logging.file.path}/${spring.application.name}/root.log
+
+info:
+  name: "pd-sms-manage"
+  description: "短信管理启动模块"
+  version: "1.0.0"
+  spring-boot-version: "2.2.2.RELEASE"
+  spring-cloud-version: "Hoxton.SR1"
